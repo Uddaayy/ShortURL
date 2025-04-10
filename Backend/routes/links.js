@@ -3,124 +3,159 @@ const router = express.Router();
 const auth = require('../middleware/authMiddleware');
 const Link = require('../models/Link');
 const Click = require('../models/Click');
+const verifyToken = require('../middleware/verifyToken');
 
-// Utility to dynamically import nanoid
-const generateShortCode = async () => {
-  const { nanoid } = await import('nanoid');
-  return nanoid(8);
-};
-
-// POST /create - Create a new shortened link
-router.post('/create', auth, async (req, res) => {
-  const { originalUrl, shortCode: customCode, expireAt } = req.body;
-  const userId = req.user.userId;
+// 🔗 Create a short link
+router.post('/create', verifyToken, async (req, res) => {
+  const { originalUrl, shortCode } = req.body;
+  if (!originalUrl || !shortCode) return res.status(400).json({ message: 'Missing fields' });
 
   try {
-    let finalShortCode = customCode;
-
-    if (customCode) {
-      const existing = await Link.findOne({ shortCode: customCode });
-      if (existing) {
-        return res.status(400).json({ message: 'Custom short code already exists' });
-      }
-    } else {
-      finalShortCode = await generateShortCode();
-    }
+    const existing = await Link.findOne({ shortCode });
+    if (existing) return res.status(409).json({ message: 'Short code already exists' });
 
     const newLink = new Link({
-      userId,
       originalUrl,
-      shortCode: finalShortCode,
-      expireAt: expireAt ? new Date(expireAt) : null,
+      shortCode,
+      userId: req.userId,
+      createdAt: new Date(),
+      expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
     });
 
     await newLink.save();
 
+    // Return full short URL along with link details
     res.status(201).json({
-      shortUrl: `${process.env.BASE_URL}/${finalShortCode}`,
-      originalUrl,
-      expireAt,
-      createdAt: newLink.createdAt,
+      ...newLink._doc,
+      shortUrl: `${process.env.BASE_URL}/${shortCode}`
     });
   } catch (err) {
-    console.error('Link creation error:', err);
+    console.error('Create link error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// GET /analytics - Get analytics for user’s links
-router.get('/analytics', auth, async (req, res) => {
+// 📈 Get analytics for a specific shortCode
+router.get('/analytics/:shortCode', verifyToken, async (req, res) => {
+  const { shortCode } = req.params;
+
   try {
-    const links = await Link.find({ userId: req.user.userId });
+    const link = await Link.findOne({ shortCode, userId: req.userId });
+    if (!link) return res.status(404).json({ message: 'Link not found' });
 
-    const analyticsData = await Promise.all(
-      links.map(async (link) => {
-        const clickCount = await Click.countDocuments({ linkId: link._id });
-        return {
-          _id: link._id,
-          shortCode: link.shortCode,
-          shortUrl: `${process.env.BASE_URL}/${link.shortCode}`,
-          originalUrl: link.originalUrl,
-          clicks: clickCount,
-          createdAt: link.createdAt,
-          expireAt: link.expireAt,
-        };
-      })
-    );
+    const clicks = await Click.find({ linkId: link._id });
 
-    res.json(analyticsData);
+    const totalClicks = clicks.length;
+
+    const clicksPerDay = {};
+    clicks.forEach(click => {
+      const date = new Date(click.timestamp).toISOString().split('T')[0];
+      clicksPerDay[date] = (clicksPerDay[date] || 0) + 1;
+    });
+
+    const clickDetails = clicks.map(click => ({
+      ip: click.ip,
+      userAgent: click.userAgent,
+      timestamp: click.timestamp
+    }));
+
+    res.json({
+      shortCode: link.shortCode,
+      originalUrl: link.originalUrl,
+      totalClicks,
+      clicksPerDay,
+      clickDetails
+    });
   } catch (err) {
     console.error('Analytics error:', err);
-    res.status(500).json({ message: 'Server error while fetching analytics' });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-// PUT /edit/:id - Edit a link’s originalUrl or expiry
-router.put('/edit/:id', auth, async (req, res) => {
-  const { originalUrl, expireAt } = req.body;
+// 🧾 Get all links for a user with optional search/sort/filter
+router.get('/', verifyToken, async (req, res) => {
+  const { search = '', sort = 'createdAt', order = 'desc' } = req.query;
+
+  const sortOptions = {};
+  sortOptions[sort] = order === 'asc' ? 1 : -1;
 
   try {
-    const link = await Link.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user.userId },
-      {
-        originalUrl,
-        expireAt: expireAt ? new Date(expireAt) : null,
-      },
+    const links = await Link.find({
+      userId: req.userId,
+      $or: [
+        { originalUrl: new RegExp(search, 'i') },
+        { shortCode: new RegExp(search, 'i') }
+      ]
+    }).sort(sortOptions);
+
+    res.json(links);
+  } catch (err) {
+    console.error('Fetch links error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// ✏️ Update a link
+router.put('/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
+  const { originalUrl } = req.body;
+
+  try {
+    const updated = await Link.findOneAndUpdate(
+      { _id: id, userId: req.userId },
+      { originalUrl },
       { new: true }
     );
 
-    if (!link) {
-      return res.status(404).json({ message: 'Link not found or unauthorized' });
-    }
+    if (!updated) return res.status(404).json({ message: 'Link not found' });
 
-    res.json({
-      message: 'Link updated successfully',
-      link,
-    });
+    res.json(updated);
   } catch (err) {
     console.error('Update error:', err);
-    res.status(500).json({ message: 'Server error while updating link' });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-// DELETE /delete/:id - Delete a link
-router.delete('/delete/:id', auth, async (req, res) => {
+// ❌ Delete a link
+router.delete('/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const result = await Link.findOneAndDelete({
-      _id: req.params.id,
-      userId: req.user.userId,
-    });
+    const deleted = await Link.findOneAndDelete({ _id: id, userId: req.userId });
+    if (!deleted) return res.status(404).json({ message: 'Link not found' });
 
-    if (!result) {
-      return res.status(404).json({ message: 'Link not found or unauthorized' });
-    }
+    await Click.deleteMany({ linkId: deleted._id });
 
-    await Click.deleteMany({ linkId: result._id });
-
-    res.json({ message: 'Link deleted successfully' });
+    res.json({ message: 'Link deleted' });
   } catch (err) {
     console.error('Delete error:', err);
-    res.status(500).json({ message: 'Server error while deleting link' });
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// 🚀 Redirect route
+router.get('/:shortCode', async (req, res) => {
+  const { shortCode } = req.params;
+
+  try {
+    const link = await Link.findOne({ shortCode });
+
+    if (!link) return res.status(404).send('Link not found');
+    if (new Date() > link.expiryDate) return res.status(410).send('Link expired');
+
+    const newClick = new Click({
+      linkId: link._id,
+      userId: link.userId,
+      ip: req.ip,
+      userAgent: req.headers['user-agent']
+    });
+
+    await newClick.save();
+
+    res.redirect(link.originalUrl);
+  } catch (err) {
+    console.error('Redirect error:', err);
+    res.status(500).send('Server error');
   }
 });
 
