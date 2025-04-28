@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import lucidereact from 'react';
 class ErrorBoundary extends Component {
   state = { hasError: false };
 

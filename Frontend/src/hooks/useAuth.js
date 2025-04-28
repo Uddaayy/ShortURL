@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';  // Adjust the path if needed
+import { AuthContext } from '../context/AuthContext';  
 
 const useAuth = () => {
-  return useContext(AuthContext);  // This will give you access to authentication context
+  return useContext(AuthContext);  
 };
 
 export default useAuth;

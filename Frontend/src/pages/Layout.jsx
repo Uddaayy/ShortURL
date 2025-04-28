@@ -1,4 +1,4 @@
-// src/pages/Layout.jsx
+
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 
