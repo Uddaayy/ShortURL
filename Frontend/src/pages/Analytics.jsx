@@ -1,7 +1,7 @@
-// src/pages/Analytics.jsx
+
 
 import React, { useEffect, useState } from 'react';
-//import { useAuth } from '../hooks/useAuth';  // Importing the useAuth hook for authentication
+import { useAuth } from '../hooks/useAuth'; 
 import axios from 'axios';
 import { BarChart3, Loader2 } from 'lucide-react';
 import LinkAnalytics from '../components/LinkAnalytics';
