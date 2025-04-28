@@ -1,63 +1,75 @@
-import React, { useState } from 'react';
-import API from '../api/api';
+import React from 'react';
+import { Outlet, Link } from 'react-router-dom';
 
-const Dashboard = () => {
-  const [originalUrl, setOriginalUrl] = useState('');
-  const [customAlias, setCustomAlias] = useState('');
-  const [shortUrl, setShortUrl] = useState('');
-
-  const token = localStorage.getItem('token');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const res = await API.post(
-        '/links/create',
-        { originalUrl, customAlias },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setShortUrl(res.data.shortUrl);
-    } catch (err) {
-      console.error(err.response?.data || err.message);
-      alert('Failed to create short URL');
-    }
+const DashboardLayout = () => {
+  const styles = {
+    layout: {
+      display: 'flex',
+      minHeight: '100vh',
+      fontFamily: 'Arial, sans-serif',
+      backgroundColor: '#f9fafb',
+    },
+    sidebar: {
+      width: '250px',
+      backgroundColor: '#ffffff',
+      padding: '24px',
+      boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
+    },
+    title: {
+      fontSize: '24px',
+      fontWeight: 'bold',
+      marginBottom: '24px',
+      color: '#2563eb', // blue-600
+    },
+    navLink: {
+      display: 'block',
+      color: '#374151', // gray-700
+      textDecoration: 'none',
+      marginBottom: '12px',
+      fontSize: '16px',
+    },
+    navLinkHover: {
+      color: '#2563eb', // blue-600
+    },
+    content: {
+      flex: 1,
+      padding: '32px',
+      backgroundColor: '#f3f4f6', // gray-100
+      overflowY: 'auto',
+    },
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Shorten your URL</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Enter original URL"
-          value={originalUrl}
-          onChange={(e) => setOriginalUrl(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Custom alias (optional)"
-          value={customAlias}
-          onChange={(e) => setCustomAlias(e.target.value)}
-        />
-        <button type="submit">Shorten</button>
-      </form>
+    <div style={styles.layout}>
+      {/* Sidebar */}
+      <aside style={styles.sidebar}>
+        <h1 style={styles.title}>Link Dashboard</h1>
+        <nav>
+          <Link
+            to="/create"
+            style={styles.navLink}
+            onMouseOver={(e) => (e.target.style.color = styles.navLinkHover.color)}
+            onMouseOut={(e) => (e.target.style.color = styles.navLink.color)}
+          >
+            Create Link
+          </Link>
+          <Link
+            to="/analytics"
+            style={styles.navLink}
+            onMouseOver={(e) => (e.target.style.color = styles.navLinkHover.color)}
+            onMouseOut={(e) => (e.target.style.color = styles.navLink.color)}
+          >
+            Analytics
+          </Link>
+        </nav>
+      </aside>
 
-      {shortUrl && (
-        <div>
-          <h3>Short URL:</h3>
-          <a href={shortUrl} target="_blank" rel="noopener noreferrer">
-            {shortUrl}
-          </a>
-        </div>
-      )}
+      {/* Main Content */}
+      <main style={styles.content}>
+        <Outlet />
+      </main>
     </div>
   );
 };
 
-export default Dashboard;
+export default DashboardLayout;

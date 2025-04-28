@@ -3,39 +3,31 @@ import Login from './pages/Login';
 import CreateLink from './pages/CreateLink';
 import Analytics from './pages/Analytics';
 import DashboardLayout from './layouts/DashboardLayout';
-import PrivateRoute from './components/PrivateRoute';
+import './index.css';
+const App = () => {
+  const isAuthenticated = () => !!localStorage.getItem('token');
 
-function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        
-        <Route
-          path="/create"
-          element={
-            <PrivateRoute>
-              <DashboardLayout>
-                <CreateLink />
-              </DashboardLayout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/analytics"
-          element={
-            <PrivateRoute>
-              <DashboardLayout>
-                <Analytics />
-              </DashboardLayout>
-            </PrivateRoute>
-          }
-        />
 
-        <Route path="*" element={<Navigate to="/create" />} />
+        <Route element={<DashboardLayout />}>
+          <Route
+            path="/create"
+            element={isAuthenticated() ? <CreateLink /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/analytics"
+            element={isAuthenticated() ? <Analytics /> : <Navigate to="/login" />}
+          />
+        </Route>
+
+        {/* Redirect unknown paths */}
+        <Route path="*" element={<Navigate to={isAuthenticated() ? "/create" : "/login"} />} />
       </Routes>
     </BrowserRouter>
   );
-}
+};
 
 export default App;
