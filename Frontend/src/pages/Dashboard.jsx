@@ -23,18 +23,18 @@ const DashboardLayout = () => {
     },
     navLink: {
       display: 'block',
-      color: '#374151', // gray-700
+      color: '#374151', 
       textDecoration: 'none',
       marginBottom: '12px',
       fontSize: '16px',
     },
     navLinkHover: {
-      color: '#2563eb', // blue-600
+      color: '#2563eb', 
     },
     content: {
       flex: 1,
       padding: '32px',
-      backgroundColor: '#f3f4f6', // gray-100
+      backgroundColor: '#f3f4f6', 
       overflowY: 'auto',
     },
   };
