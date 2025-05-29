@@ -1,32 +1,22 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Login from './pages/Login';
-import CreateLink from './pages/CreateLink';
-import Analytics from './pages/Analytics';
-import DashboardLayout from './layouts/DashboardLayout';
-import './index.css';
+import Dashboard from './pages/Dashboard';
+
 const App = () => {
-  const isAuthenticated = () => !!localStorage.getItem('token');
+  const { token } = useSelector((state) => state.auth);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-
-        <Route element={<DashboardLayout />}>
-          <Route
-            path="/create"
-            element={isAuthenticated() ? <CreateLink /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/analytics"
-            element={isAuthenticated() ? <Analytics /> : <Navigate to="/login" />}
-          />
-        </Route>
-
-        {/* Redirect unknown paths */}
-        <Route path="*" element={<Navigate to={isAuthenticated() ? "/create" : "/login"} />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/dashboard"
+        element={token ? <Dashboard /> : <Navigate to="/login" />}
+      />
+      <Route path="*" element={<div>Page Not Found</div>} />
+    </Routes>
   );
 };
 
