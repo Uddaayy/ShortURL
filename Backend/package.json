@@ -22,6 +22,7 @@
     "nanoid": "^3.3.4",
     "qrcode": "^1.5.4",
     "shortid": "^2.2.17",
+    "ua-parser-js": "^2.0.3",
     "useragent": "^2.3.0"
   },
   "devDependencies": {

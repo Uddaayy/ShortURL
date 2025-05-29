@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLinks, createLink } from '../features/links/linkSlice';
+import QRCodeComponent from './components/QRCodeComponent'; // <-- updated import path
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
       {/* Link Creation Form */}
@@ -57,14 +58,14 @@ const Dashboard = () => {
       </form>
 
       {/* Link Table */}
-      <div className="bg-white p-4 rounded shadow">
+      <div className="bg-white p-4 rounded shadow overflow-x-auto">
         <h2 className="text-lg font-semibold mb-2">Your Links</h2>
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <table className="w-full text-sm text-left">
+          <table className="w-full text-sm text-left table-auto">
             <thead>
               <tr>
                 <th className="p-2">Original URL</th>
@@ -72,6 +73,7 @@ const Dashboard = () => {
                 <th className="p-2">Clicks</th>
                 <th className="p-2">Created</th>
                 <th className="p-2">Expires</th>
+                <th className="p-2">QR Code</th> {/* New Column */}
               </tr>
             </thead>
             <tbody>
@@ -79,13 +81,18 @@ const Dashboard = () => {
                 <tr key={link._id} className="border-t">
                   <td className="p-2 truncate max-w-xs">{link.longUrl}</td>
                   <td className="p-2 text-blue-600">
-                    <a href={link.shortUrl} target="_blank" rel="noopener noreferrer">
+                    <a href={`/analytics/${link._id}`} className="underline">
                       {link.shortUrl}
                     </a>
                   </td>
                   <td className="p-2">{link.clicks}</td>
                   <td className="p-2">{new Date(link.createdAt).toLocaleDateString()}</td>
-                  <td className="p-2">{link.expiresAt ? new Date(link.expiresAt).toLocaleDateString() : '—'}</td>
+                  <td className="p-2">
+                    {link.expiresAt ? new Date(link.expiresAt).toLocaleDateString() : '—'}
+                  </td>
+                  <td className="p-2">
+                    <QRCodeComponent url={`http://localhost:5000/${link.shortId}`} />
+                  </td>
                 </tr>
               ))}
             </tbody>
