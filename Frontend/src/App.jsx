@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import LinkAnalytics from './pages/LinkAnalytics';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 const App = () => {
   const { token } = useSelector((state) => state.auth);
 
@@ -11,6 +12,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/analytics/:id" element={<AnalyticsDashboard />} />
       <Route
         path="/dashboard"
         element={token ? <Dashboard /> : <Navigate to="/login" />}

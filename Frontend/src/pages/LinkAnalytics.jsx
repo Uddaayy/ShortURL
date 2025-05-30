@@ -15,7 +15,7 @@ const LinkAnalytics = () => {
         const res = await axios.get(`http://localhost:5000/api/analytics/${id}`);
         setClicks(res.data);
       } catch (err) {
-        console.error('Error fetching analytics', err);
+        console.error('Error fetching analytics:', err);
       } finally {
         setLoading(false);
       }
@@ -25,17 +25,18 @@ const LinkAnalytics = () => {
   }, [id]);
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Link Analytics</h1>
+    <div className="p-6 max-w-5xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">📊 Link Analytics</h1>
+
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-gray-500">Loading analytics...</p>
       ) : clicks.length === 0 ? (
-        <p>No analytics data found.</p>
+        <p className="text-red-500">No analytics data found.</p>
       ) : (
-        <>
+        <div className="space-y-8">
           <AnalyticsChart data={clicks} />
           <DevicePieChart data={clicks} />
-        </>
+        </div>
       )}
     </div>
   );

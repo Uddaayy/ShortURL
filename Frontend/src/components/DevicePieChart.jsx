@@ -1,32 +1,40 @@
 import React from 'react';
-import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  PieChart, Pie, Tooltip, Cell, Legend, ResponsiveContainer
+} from 'recharts';
 
-const COLORS = ['#3b82f6', '#f59e0b', '#10b981', '#ef4444'];
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 const DevicePieChart = ({ data }) => {
-  const deviceCount = data.reduce((acc, click) => {
-    const device = click.device || 'unknown';
+  // Group by device
+  const deviceCounts = data.reduce((acc, curr) => {
+    const device = curr.device || 'Unknown';
     acc[device] = (acc[device] || 0) + 1;
     return acc;
   }, {});
 
-  const chartData = Object.entries(deviceCount).map(([name, value]) => ({ name, value }));
+  const chartData = Object.entries(deviceCounts).map(([name, value]) => ({
+    name,
+    value,
+  }));
 
   return (
-    <div className="bg-white p-4 rounded shadow mt-6">
-      <h3 className="text-lg font-semibold mb-2">Device / Browser Breakdown</h3>
+    <div>
+      <h2 className="text-lg font-semibold mb-2">Device Breakdown</h2>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
             data={chartData}
             dataKey="value"
             nameKey="name"
+            cx="50%"
+            cy="50%"
             outerRadius={100}
             fill="#8884d8"
             label
           >
-            {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            {chartData.map((_, index) => (
+              <Cell key={index} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip />
