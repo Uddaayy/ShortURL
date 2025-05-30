@@ -17,8 +17,8 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/links', urlRoutes);   // <-- use urlRoutes for /api/links
-app.use('/api/url', urlRoutes);     // (optional if you want this also)
+app.use('/api/links', urlRoutes);  
+app.use('/api/url', urlRoutes);   
 app.use('/', redirectRoutes);
 
 const PORT = process.env.PORT || 5000;
