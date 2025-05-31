@@ -2,7 +2,6 @@ import React from 'react';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid
 } from 'recharts';
-
 const AnalyticsChart = ({ data }) => {
   const grouped = data.reduce((acc, curr) => {
     const date = new Date(curr.timestamp).toLocaleDateString();
