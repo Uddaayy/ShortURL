@@ -13,7 +13,6 @@ const AnalyticsChart = ({ data }) => {
     date,
     clicks,
   }));
-
   return (
     <div>
       <h2 className="text-lg font-semibold mb-2">Clicks Over Time</h2>
