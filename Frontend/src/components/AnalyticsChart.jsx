@@ -4,7 +4,6 @@ import {
 } from 'recharts';
 
 const AnalyticsChart = ({ data }) => {
-  // Group clicks by date
   const grouped = data.reduce((acc, curr) => {
     const date = new Date(curr.timestamp).toLocaleDateString();
     acc[date] = (acc[date] || 0) + 1;

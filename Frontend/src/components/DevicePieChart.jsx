@@ -6,7 +6,6 @@ import {
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 const DevicePieChart = ({ data }) => {
-  // Group by device
   const deviceCounts = data.reduce((acc, curr) => {
     const device = curr.device || 'Unknown';
     acc[device] = (acc[device] || 0) + 1;
