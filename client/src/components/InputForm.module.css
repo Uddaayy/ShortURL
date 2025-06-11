@@ -1,6 +1,5 @@
 /* @media query for max 1200px */
 @media screen and (max-width: 1200px) {
-
     .mainContainer {
         width: 80% !important;
         margin: auto !important;
