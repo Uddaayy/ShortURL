@@ -2,25 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
-import { CSSReset, theme, ChakraProvider, ColorModeProvider, ThemeProvider } from '@chakra-ui/react';
 import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 
-const serverLocal = "http://localhost:5000";
-const serverBaseUrl = import.meta.env.VITE_APP_URI;
+// Handle environment variable safely
+const serverBaseUrl = import.meta.env.VITE_APP_URI || "http://localhost:5000";
 axios.defaults.baseURL = serverBaseUrl;
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+// Safely get the root element
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
-        <ChakraProvider>
-            <BrowserRouter>
-                <ThemeProvider theme={ theme }>
-                    <ColorModeProvider>
-                        <CSSReset />
-                        <App />
-                    </ColorModeProvider>
-                </ThemeProvider>
-            </BrowserRouter>
-        </ChakraProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </React.StrictMode>
-);
+  );
+} else {
+  console.error("Root element not found. Make sure your HTML has a <div id='root'></div>");
+}
