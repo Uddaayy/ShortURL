@@ -10,7 +10,7 @@ export default function Homepage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 relative z-10 bg-white dark:bg-black transition-colors duration-500">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 relative z-10 bg-blue-200 dark:bg-black transition-colors duration-500">
       {/* Floating decorative elements */}
       <div className="absolute top-20 left-10 text-blue-400 opacity-30 animate-float">
         <Scissors className="w-6 h-6" />
