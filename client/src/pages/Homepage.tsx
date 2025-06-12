@@ -62,7 +62,7 @@ export default function Homepage() {
       <div className={`mt-12 text-center transition-all duration-1000 delay-500 ${isVisible ? 'animate-slide-in-up' : 'opacity-0 translate-y-10'}`}>
         <div className="relative group">
           <p className="text-gray-600 dark:text-gray-400 flex items-center justify-center gap-2 transition-all duration-300 hover:text-gray-800 dark:hover:text-gray-300">
-            ~(
+            ~
             <a 
               target="_blank" 
               href="https://akshay-kumar-portfoilo.netlify.app/"
@@ -71,7 +71,7 @@ export default function Homepage() {
               <span className="relative z-10">Udayy</span>
               <div className="absolute inset-0 bg-blue-400/10 rounded px-1 scale-0 group-hover/link:scale-100 transition-transform duration-300"></div>
             </a>
-            )
+            
           </p>
 
           {/* Subtle glow effect */}

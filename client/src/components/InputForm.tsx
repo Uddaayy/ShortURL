@@ -87,7 +87,8 @@ export const InputForm = () => {
           background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(59, 130, 246, 0.1), transparent 40%)`
         }}
       >
-        <div className="gradient-border-inner p-8 space-y-6 relative bg-blue-50 dark:bg-zinc-900 text-black dark:text-white">
+        <div className="gradient-border-inner p-8 space-y-6 relative bg-gradient-to-br from-blue-390 to-blue-450 dark:bg-zinc-900 dark:bg-none text-black dark:text-white">
+
 
           {/* Decorative Icons */}
           <div className="absolute top-4 right-4 text-blue-400 opacity-20 animate-spin-slow">
