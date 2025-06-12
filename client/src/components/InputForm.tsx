@@ -87,7 +87,7 @@ export const InputForm = () => {
           background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(59, 130, 246, 0.1), transparent 40%)`
         }}
       >
-        <div className="gradient-border-inner p-8 space-y-6 relative bg-gradient-to-br from-blue-390 to-blue-450 dark:bg-zinc-900 dark:bg-none text-black dark:text-white">
+        <div className="gradient-border-inner p-8 space-y-6 relative bg-gradient-to-br from-blue-400 to-blue-450 dark:bg-zinc-1500 dark:bg-none text-black dark:text-white">
 
 
           {/* Decorative Icons */}
@@ -100,7 +100,7 @@ export const InputForm = () => {
 
           {/* URL Input */}
           <div className="space-y-3">
-            <label className="block text-white/70 text-sm font-medium">
+            <label className="block text-white/90 text-sm font-medium">
   Convert long URLs into shortened versions with a single click.
 </label>
 
@@ -133,7 +133,7 @@ export const InputForm = () => {
 
           {/* Custom Code */}
           <div className="space-y-3">
-            <label className="block text-white/70 text-sm font-medium">
+            <label className="block text-white/90 text-sm font-medium">
   Create personalized and memorable links for your URLs (Optional)
 </label>
 
@@ -169,7 +169,7 @@ export const InputForm = () => {
               {isLoading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Submitting...</span>
+                  <span>Generating...</span>
                   <div className="flex space-x-1">
                     <div className="w-1 h-1 bg-white rounded-full animate-bounce"></div>
                     <div className="w-1 h-1 bg-white rounded-full animate-bounce delay-100"></div>
@@ -191,7 +191,7 @@ export const InputForm = () => {
             <div className="space-y-3 animate-slide-in-up">
               <label className="block text-sm font-medium flex items-center gap-2">
   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-  <span className="text-white/70">Your shortened URL:</span>
+  <span className="text-white/90">Your shortened URL:</span>
 </label>
 
               <div className="flex gap-2 p-1 bg-gray-100 dark:bg-gray-800/30 rounded-lg border border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 group relative overflow-hidden">

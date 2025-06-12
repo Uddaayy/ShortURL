@@ -23,7 +23,7 @@
     border-radius: 12px;
     position: relative;
   }
-  
+  /*
   .gradient-border::before {
     content: '';
     position: absolute;
@@ -34,8 +34,9 @@
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: xor;
     animation: border-dance 3s linear infinite;
+    z-index: 0;
   }
-  
+  */
   .gradient-border-inner {
     background: linear-gradient(145deg, #0f172a, #1e293b, #111827);
     border-radius: 10px;
@@ -52,6 +53,7 @@
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
     transition: left 0.8s ease;
+    z-index: 1;
   }
   
   .gradient-border:hover .gradient-border-inner::before {

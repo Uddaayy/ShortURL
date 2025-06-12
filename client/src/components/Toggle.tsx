@@ -33,7 +33,7 @@ const Toggle = () => {
   >
     <span className="relative z-10 flex items-center gap-2 transition-all duration-300 group-hover:gap-3">
       {isDark ? <Sun className="w-4 h-4 text-yellow-300" /> : <Moon className="w-4 h-4 text-blue-600" />}
-      {isDark ? "Light Mode" : "Dark Mode"}
+      {isDark ? "Light" : "Dark"}
     </span>
 
     {/* Optional glowing background effect */}
