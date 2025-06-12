@@ -8,17 +8,14 @@ interface InputState {
 }
 
 export const InputForm = () => {
-  const [input, setInput] = useState<InputState>({
-    longUrl: "",
-    urlCode: ""
-  });
+  const [input, setInput] = useState<InputState>({ longUrl: "", urlCode: "" });
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [hasCopied, setHasCopied] = useState(false);
   const [isFormFocused, setIsFormFocused] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
-  const clientBaseUrl = window.location.href;
+  const clientBaseUrl = import.meta.env.VITE_APP_URI || "http://localhost:5000";
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -27,9 +24,7 @@ export const InputForm = () => {
   };
 
   const handleEnter = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSubmit();
-    }
+    if (e.key === "Enter") handleSubmit();
   };
 
   const handleSubmit = () => {
@@ -42,14 +37,14 @@ export const InputForm = () => {
     axios.post('/api/url/shorten', input)
       .then(res => {
         if (res.status) {
-          let data = res.data;
-          let createUrl = clientBaseUrl + data.urlCode;
+          const data = res.data;
+          const createUrl = `${clientBaseUrl}/${data.urlCode}`;
           setUrl(createUrl);
         }
         setIsLoading(false);
       })
       .catch(error => {
-        let errorMsg = error.response?.data?.error || "An error occurred";
+        const errorMsg = error.response?.data?.error || "An error occurred";
         setUrl(errorMsg);
         setIsLoading(false);
       });
@@ -71,7 +66,6 @@ export const InputForm = () => {
         const rect = formRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        
         formRef.current.style.setProperty('--mouse-x', `${x}px`);
         formRef.current.style.setProperty('--mouse-y', `${y}px`);
       }
@@ -85,29 +79,30 @@ export const InputForm = () => {
   }, []);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div 
+    <div className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-900 transition-colors duration-500 rounded-xl p-4 shadow-md">
+      <div
         ref={formRef}
         className={`gradient-border glow-blue hover:glow-blue-intense transition-all duration-700 transform hover:scale-[1.02] ${isFormFocused ? 'glow-blue-intense scale-[1.01]' : ''}`}
         style={{
           background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(59, 130, 246, 0.1), transparent 40%)`
         }}
       >
-        <div className="gradient-border-inner p-8 space-y-6 relative">
-          
-          {/* Floating decorative elements */}
+        <div className="gradient-border-inner p-8 space-y-6 relative bg-blue-50 dark:bg-zinc-900 text-black dark:text-white">
+
+          {/* Decorative Icons */}
           <div className="absolute top-4 right-4 text-blue-400 opacity-20 animate-spin-slow">
             <Sparkles className="w-4 h-4" />
           </div>
           <div className="absolute bottom-4 left-4 text-blue-300 opacity-30 animate-bounce-gentle">
             <Zap className="w-3 h-3" />
           </div>
-          
-          {/* Main URL Input */}
+
+          {/* URL Input */}
           <div className="space-y-3">
-            <label className="block text-gray-300 text-sm font-medium transition-colors duration-300 hover:text-gray-200">
-              Convert long URLs into shortened versions with a single click.
-            </label>
+            <label className="block text-white/70 text-sm font-medium">
+  Convert long URLs into shortened versions with a single click.
+</label>
+
             <div className="relative group">
               <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-all duration-300 group-focus-within:text-blue-400 group-focus-within:scale-110" />
               <input
@@ -119,31 +114,30 @@ export const InputForm = () => {
                 onKeyDown={handleEnter}
                 onFocus={() => setIsFormFocused(true)}
                 onBlur={() => setIsFormFocused(false)}
-                className={`w-full pl-11 pr-4 py-4 bg-gray-800/50 border ${
-                  isError ? 'border-red-500 animate-pulse' : 'border-gray-600'
-                } rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus-glow transition-all duration-300 hover:bg-gray-800/70 hover:border-gray-500`}
+                className={`w-full pl-11 pr-4 py-4 bg-white dark:bg-gray-800/50 border ${
+                  isError ? 'border-red-500 animate-pulse' : 'border-gray-300 dark:border-gray-600'
+                } rounded-lg text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus-glow transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800/70 hover:border-gray-400 dark:hover:border-gray-500`}
               />
-              
-              {/* Input glow effect */}
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-600/20 to-blue-400/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-600/20 to-blue-400/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </div>
             {isError ? (
-              <p className="text-red-400 text-sm animate-pulse flex items-center gap-2">
-                <div className="w-2 h-2 bg-red-400 rounded-full animate-ping"></div>
+              <p className="text-red-500 text-sm animate-pulse flex items-center gap-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-ping" />
                 URL is required.
               </p>
             ) : (
-              <p className="text-gray-400 text-sm transition-colors duration-300 hover:text-gray-300">Enter your Long URL</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm transition-colors duration-300 hover:text-gray-700 dark:hover:text-gray-300">Enter your Long URL</p>
             )}
           </div>
 
-          {/* Custom Code Input */}
+          {/* Custom Code */}
           <div className="space-y-3">
-            <label className="block text-gray-300 text-sm font-medium transition-colors duration-300 hover:text-gray-200">
-              Create personalized and memorable links for your URLs (Optional)
-            </label>
+            <label className="block text-white/70 text-sm font-medium">
+  Create personalized and memorable links for your URLs (Optional)
+</label>
+
             <div className="flex flex-col md:flex-row gap-2">
-              <div className="flex-1 bg-gray-700/50 rounded-lg px-4 py-3 text-gray-300 text-sm font-mono border border-gray-600 transition-all duration-300 hover:bg-gray-700/70 hover:border-gray-500 relative overflow-hidden">
+              <div className="flex-1 bg-gray-100 dark:bg-gray-700/50 rounded-lg px-4 py-3 text-gray-700 dark:text-gray-300 text-sm font-mono border border-gray-300 dark:border-gray-600 transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-700/70 hover:border-gray-400 dark:hover:border-gray-500 relative overflow-hidden">
                 <div className="relative z-10">{clientBaseUrl}</div>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-1000"></div>
               </div>
@@ -156,24 +150,20 @@ export const InputForm = () => {
                   placeholder="your-custom-code"
                   onChange={handleInputChange}
                   onKeyDown={handleEnter}
-                  className="w-full pl-11 pr-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus-glow transition-all duration-300 hover:bg-gray-800/70 hover:border-gray-500"
+                  className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus-glow transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800/70 hover:border-gray-400 dark:hover:border-gray-500"
                 />
-                
-                {/* Input glow effect */}
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-600/20 to-blue-400/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-600/20 to-blue-400/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </div>
             </div>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             onClick={handleSubmit}
             disabled={isLoading}
             className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold py-4 px-6 rounded-lg button-magnetic ripple disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 relative overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
           >
-            {/* Button background animation */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            
             <div className="relative z-10 flex items-center gap-3">
               {isLoading ? (
                 <>
@@ -181,8 +171,8 @@ export const InputForm = () => {
                   <span>Submitting...</span>
                   <div className="flex space-x-1">
                     <div className="w-1 h-1 bg-white rounded-full animate-bounce"></div>
-                    <div className="w-1 h-1 bg-white rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-1 h-1 bg-white rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-1 h-1 bg-white rounded-full animate-bounce delay-100"></div>
+                    <div className="w-1 h-1 bg-white rounded-full animate-bounce delay-200"></div>
                   </div>
                 </>
               ) : (
@@ -195,21 +185,20 @@ export const InputForm = () => {
             </div>
           </button>
 
-          {/* Result */}
+          {/* Output */}
           {url && (
             <div className="space-y-3 animate-slide-in-up">
-              <label className="block text-gray-300 text-sm font-medium flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                Your shortened URL:
-              </label>
-              <div className="flex gap-2 p-1 bg-gray-800/30 rounded-lg border border-gray-600 hover:border-gray-500 transition-all duration-300 group relative overflow-hidden">
-                {/* Background animation */}
+              <label className="block text-sm font-medium flex items-center gap-2">
+  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+  <span className="text-white/70">Your shortened URL:</span>
+</label>
+
+              <div className="flex gap-2 p-1 bg-gray-100 dark:bg-gray-800/30 rounded-lg border border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 group relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                
                 <input
                   value={url}
                   readOnly
-                  className="flex-1 px-3 py-3 bg-transparent text-white font-mono text-sm focus:outline-none relative z-10"
+                  className="flex-1 px-3 py-3 bg-transparent text-black dark:text-white font-mono text-sm focus:outline-none relative z-10"
                 />
                 <button
                   onClick={handleCopy}
