@@ -23,14 +23,14 @@ export default function ShortUrlRedirect() {
           }
           return prev - 1;
         });
-      }, 1000);
+      }, 500);
 
       return () => clearInterval(timer);
     }
   }, [urlCode]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-white dark:bg-black transition-colors duration-500">
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-blue-100 dark:bg-black transition-colors duration-500">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse-slow"></div>
