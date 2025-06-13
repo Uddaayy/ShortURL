@@ -201,23 +201,26 @@ export const InputForm = () => {
                   readOnly
                   className="flex-1 px-3 py-3 bg-transparent text-black dark:text-white font-mono text-sm focus:outline-none relative z-10"
                 />
-                <button
-                  onClick={handleCopy}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-all duration-300 flex items-center gap-2 hover:shadow-md hover:shadow-blue-500/25 button-magnetic ripple relative z-10 group/copy"
-                >
-                  {hasCopied ? (
-                    <>
-                      <Check className="w-4 h-4 animate-bounce-gentle" />
-                      <span className="hidden sm:inline">Copied!</span>
-                      <div className="absolute inset-0 bg-green-500 opacity-20 rounded-md animate-pulse"></div>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4 transition-transform duration-300 group-hover/copy:scale-110" />
-                      <span className="hidden sm:inline">Copy</span>
-                    </>
-                  )}
-                </button>
+                {url.startsWith("http") && (
+  <button
+    onClick={handleCopy}
+    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-all duration-300 flex items-center gap-2 hover:shadow-md hover:shadow-blue-500/25 button-magnetic ripple relative z-10 group/copy"
+  >
+    {hasCopied ? (
+      <>
+        <Check className="w-4 h-4 animate-bounce-gentle" />
+        <span className="hidden sm:inline">Copied!</span>
+        <div className="absolute inset-0 bg-green-500 opacity-20 rounded-md animate-pulse"></div>
+      </>
+    ) : (
+      <>
+        <Copy className="w-4 h-4 transition-transform duration-300 group-hover/copy:scale-110" />
+        <span className="hidden sm:inline">Copy</span>
+      </>
+    )}
+  </button>
+)}
+
               </div>
             </div>
           )}

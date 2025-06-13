@@ -70,7 +70,7 @@ export default function Homepage() {
             ~
             <a 
               target="_blank" 
-              href="https://akshay-kumar-portfoilo.netlify.app/"
+              href="https://udayprabhas.vercel.app/"
               className="text-blue-500 dark:text-blue-400 hover:text-blue-400 dark:hover:text-blue-300 transition-all duration-300 underline decoration-blue-400/50 hover:decoration-blue-300 relative group/link"
             >
               <span className="relative z-10">Udayy</span>
