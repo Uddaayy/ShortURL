@@ -15,7 +15,7 @@ export const InputForm = () => {
   const [hasCopied, setHasCopied] = useState(false);
   const [isFormFocused, setIsFormFocused] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
-  const clientBaseUrl = import.meta.env.VITE_APP_URI || "http://localhost:5000";
+  const clientBaseUrl = window.location.href;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -38,7 +38,7 @@ export const InputForm = () => {
       .then(res => {
         if (res.status) {
           const data = res.data;
-          const createUrl = `${clientBaseUrl}/${data.urlCode}`;
+          const createUrl = `${clientBaseUrl}${data.urlCode}`;
           setUrl(createUrl);
         }
         setIsLoading(false);
@@ -134,7 +134,7 @@ export const InputForm = () => {
           {/* Custom Code */}
           <div className="space-y-3">
             <label className="block text-white/90 text-sm font-medium">
-  Create personalized and memorable links for your URLs (Optional)
+  Create personalized and memorable links for your URLs 
 </label>
 
             <div className="flex flex-col md:flex-row gap-2">
